@@ -1,0 +1,42 @@
+@reference "../../app/globals.css";
+
+@keyframes shimmer {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.card {
+  @apply bg-light rounded-lg p-6 flex flex-col gap-6;
+}
+
+.header {
+  @apply flex items-start gap-5;
+}
+
+.avatar {
+  @apply bg-lighter rounded-full shrink-0;
+  width: 4rem;
+  height: 4rem;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.headerLines {
+  @apply flex flex-col gap-3 flex-1 justify-center;
+}
+
+.body {
+  @apply flex flex-col gap-3;
+}
+
+.line {
+  @apply bg-lighter rounded;
+  height: 0.75rem;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* widths */
+.full   { width: 100%; }
+.long   { width: 75%; }
+.medium { width: 55%; }
+.short  { width: 40%; }
