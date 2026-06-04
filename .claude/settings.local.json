@@ -1,0 +1,22 @@
+{
+    "permissions": {
+        "allow": [
+            "WebSearch",
+            "Bash(git init)",
+            "Bash(git switch:*)"
+        ]
+    },
+    "hooks": {
+        "PostToolUse": [
+            {
+                "matcher": "Write|Edit|Create",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "echo 'Remember to commit your changes with git after editing files!'"
+                    }
+                ]
+            }
+        ]
+    }
+}
