@@ -1,0 +1,42 @@
+@reference "../../app/globals.css";
+
+.form {
+  @apply flex flex-col gap-5 my-4 mx-auto w-full max-w-sm;
+}
+
+.field {
+  @apply flex flex-col gap-1;
+}
+
+.field label {
+  @apply text-body text-sm font-medium;
+}
+
+.field input {
+  @apply bg-lighter text-heading rounded-lg px-4 py-2 outline-none border border-transparent;
+  @apply focus:border-primary transition-colors;
+}
+
+.passwordWrapper {
+  @apply relative flex items-center;
+}
+
+.passwordWrapper input {
+  @apply w-full pr-10;
+}
+
+.toggle {
+  @apply absolute right-3 text-body hover:text-primary transition-colors;
+}
+
+.submit {
+  @apply bg-primary text-dark font-semibold rounded-lg py-2 px-4 hover:opacity-90 transition-opacity mt-1;
+}
+
+.switch {
+  @apply text-center text-sm text-body;
+}
+
+.switch a {
+  @apply text-primary hover:underline;
+}
