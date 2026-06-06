@@ -8,7 +8,7 @@ export default function Navbar() {
       <nav>
         <header>
           <h1>
-            <Link href="/heists">
+            <Link href="/heists" className={styles.logoLink}>
               P<Clock8 className={styles.logo} size={14} strokeWidth={2.75} />
               cket Heist
             </Link>
@@ -17,7 +17,7 @@ export default function Navbar() {
         </header>
         <ul>
           <li>
-            <Link href="/heists/create">Create Heist</Link>
+            <Link href="/heists/create" className={styles.ctaButton}>Create Heist</Link>
           </li>
         </ul>
       </nav>

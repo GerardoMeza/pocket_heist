@@ -1,6 +1,6 @@
 ---
 description: Create a feature spec file and branch from a short idea
-argument-hint: Short feature description
+argument-hint: [Short feature description, optional: 'figma: <figma-component-link>']
 allowed-tools: Read, Write, Glob, Bash(git switch:*)
 ---
 
@@ -15,6 +15,7 @@ Your job will be to turn the user input above into:
 - A human friendly feature title in kebab-case (e.g. new-heist-form)
 - A safe git branch name not already taken (e.g. claude/feature/new-heist-form)
 - A detailed markdown spec file under the _specs/ directory
+- an optional figma design note, if a figma design link is present
 
 Then save the spec file to disk and print a short summary of what you did.
 
@@ -46,7 +47,27 @@ From `$ARGUMENTS`, extract:
    - Format: `claude/feature/<feature_slug>`  
    - Example: `claude/feature/card-component`.
 
+4. `figma_component` (optional)
+    - If the user input contains a Figma link, extract the component name from the link and include it in the spec file under "Figma Design Reference".  
+    - Example: `figma: https://www.figma.com/file/abc123/design?node-id=456-789&t=xyz`
+
+
 If you cannot infer a sensible `feature_title` and `feature_slug`, ask the user to clarify instead of guessing.
+
+## Step 2.5 Pull Figma context when needed
+If a Figma link is provided,and figma MCP tools are available:
+1. Use the figma MCP tools to locate the component in the Figma file 
+2. Extract relevant context such as:
+   - Component name
+   - Key visual constraints (e.g. padding, colors, typography)
+   - Any notes or descriptions attached to the component in Figma
+   - Color tokens or style references used by the component
+   - Border radius, shadow, or other style details
+   - Icons, images, or assets used by the component
+   - Buttons, inputs, or interactive elements included in the component
+3. Summarize this context in a clear and concise way to include in the "Figma Design Reference" section of the spec file. Focus on details that are relevant for implementation and would not be obvious without seeing the design.
+4. If lookup fails, note in the spec that the Figma context could not be retrieved and that the designer should provide necessary details in the spec directly.
+
 
 ## Step 3. Switch to a new Git branch
 

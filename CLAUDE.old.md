@@ -27,25 +27,10 @@ Components live under `components/<Name>/` with three files: `<Name>.tsx`, `<Nam
 
 ## Styling
 
-Tailwind CSS v4 is configured via PostCSS. Custom design tokens are defined with `@theme` in `app/globals.css` — use `bg-dark`, `bg-light`, `bg-lighter`, `text-primary`, `text-body`, `text-heading`, etc. rather than arbitrary values. The font is Inter (Google Fonts).
-
-Global layout utility classes defined in `globals.css`: `.center-content`, `.page-content`, `.form-title` — reuse these in new pages.
+Tailwind CSS v4 is configured via PostCSS. Custom design tokens are defined with `@theme` in `app/globals.css` — use `bg-dark`, `bg-light`, `text-primary`, `text-body`, etc. rather than arbitrary values. The font is Inter (Google Fonts).
 
 ## Testing
 
 Vitest + Testing Library with jsdom. Setup file imports `@testing-library/jest-dom/vitest`. Tests mirror the `components/` directory under `tests/components/`.
 
 Path alias `@/*` resolves to the repo root (e.g. `@/components/Navbar`).
-
-Mock `next/link` and `next/navigation` in component tests — they are not available in jsdom.
-
-## SDD Workflow (Spec-Driven Development)
-
-This project uses a lightweight spec-driven workflow with custom slash commands:
-
-- `/spec <idea>` — creates a feature spec in `_specs/` using `_specs/template.md` and switches to a new branch `claude/feature/<slug>`
-- `/plan` (via plan mode) — reads the spec and writes an implementation plan to `_plans/`
-- `/component <name>` — scaffolds a new component with TDD (test first, then implementation)
-- `/commit-message` — generates a conventional commit message from staged changes
-
-Specs live in `_specs/`, plans in `_plans/`. Always commit or stash before running `/spec`.
