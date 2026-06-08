@@ -17,9 +17,11 @@ vi.mock("@/lib/firebase", () => ({ auth: {}, db: {} }))
 
 const mockCreateUser = vi.fn()
 const mockUpdateProfile = vi.fn()
+const mockSignIn = vi.fn()
 vi.mock("firebase/auth", () => ({
   createUserWithEmailAndPassword: (...args: unknown[]) => mockCreateUser(...args),
   updateProfile: (...args: unknown[]) => mockUpdateProfile(...args),
+  signInWithEmailAndPassword: (...args: unknown[]) => mockSignIn(...args),
 }))
 
 const mockDoc = vi.fn()
@@ -41,12 +43,12 @@ function fillAndSubmit(email = "test@example.com", password = "password123") {
 
 describe("AuthForm", () => {
   beforeEach(() => {
-    vi.spyOn(console, "log").mockImplementation(() => {})
     mockPush.mockReset()
     mockCreateUser.mockReset()
     mockUpdateProfile.mockReset()
     mockSetDoc.mockReset()
     mockDoc.mockReset()
+    mockSignIn.mockReset()
   })
 
   it("renders email and password fields", () => {
@@ -84,12 +86,15 @@ describe("AuthForm", () => {
     expect(screen.getByLabelText("Password")).toHaveAttribute("type", "password")
   })
 
-  it("submitting the form logs email and password", () => {
+  it("submitting the login form calls signInWithEmailAndPassword", async () => {
+    mockSignIn.mockResolvedValue({})
     render(<AuthForm type="login" />)
     fireEvent.change(screen.getByLabelText("Email"), { target: { value: "test@example.com" } })
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "secret123" } })
     fireEvent.submit(screen.getByRole("form", { name: /log in/i }))
-    expect(console.log).toHaveBeenCalledWith({ email: "test@example.com", password: "secret123" })
+    await waitFor(() => {
+      expect(mockSignIn).toHaveBeenCalledWith({}, "test@example.com", "secret123")
+    })
   })
 
   it('switch link points to /signup when type is login', () => {

@@ -44,3 +44,8 @@
 .error {
   @apply text-sm text-red-500;
 }
+
+.success {
+  @apply text-sm;
+  color: var(--color-success);
+}
