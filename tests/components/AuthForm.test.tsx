@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react"
+import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import AuthForm from "@/components/AuthForm"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 
@@ -8,9 +8,45 @@ vi.mock("next/link", () => ({
   ),
 }))
 
+const mockPush = vi.fn()
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: mockPush }),
+}))
+
+vi.mock("@/lib/firebase", () => ({ auth: {}, db: {} }))
+
+const mockCreateUser = vi.fn()
+const mockUpdateProfile = vi.fn()
+vi.mock("firebase/auth", () => ({
+  createUserWithEmailAndPassword: (...args: unknown[]) => mockCreateUser(...args),
+  updateProfile: (...args: unknown[]) => mockUpdateProfile(...args),
+}))
+
+const mockDoc = vi.fn()
+const mockSetDoc = vi.fn()
+vi.mock("firebase/firestore", () => ({
+  doc: (...args: unknown[]) => mockDoc(...args),
+  setDoc: (...args: unknown[]) => mockSetDoc(...args),
+}))
+
+vi.mock("@/lib/codename", () => ({
+  generateCodename: vi.fn().mockReturnValue("TestCodename"),
+}))
+
+function fillAndSubmit(email = "test@example.com", password = "password123") {
+  fireEvent.change(screen.getByLabelText("Email"), { target: { value: email } })
+  fireEvent.change(screen.getByLabelText("Password"), { target: { value: password } })
+  fireEvent.submit(screen.getByRole("form", { name: /sign up/i }))
+}
+
 describe("AuthForm", () => {
   beforeEach(() => {
     vi.spyOn(console, "log").mockImplementation(() => {})
+    mockPush.mockReset()
+    mockCreateUser.mockReset()
+    mockUpdateProfile.mockReset()
+    mockSetDoc.mockReset()
+    mockDoc.mockReset()
   })
 
   it("renders email and password fields", () => {
@@ -64,5 +100,91 @@ describe("AuthForm", () => {
   it('switch link points to /login when type is signup', () => {
     render(<AuthForm type="signup" />)
     expect(screen.getByRole("link", { name: /log in/i })).toHaveAttribute("href", "/login")
+  })
+
+  describe("signup flow", () => {
+    it("redirects to /heists on success", async () => {
+      const fakeUser = { uid: "uid123" }
+      mockCreateUser.mockResolvedValue({ user: fakeUser })
+      mockUpdateProfile.mockResolvedValue(undefined)
+      mockSetDoc.mockResolvedValue(undefined)
+
+      render(<AuthForm type="signup" />)
+      fillAndSubmit()
+
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith("/heists")
+      })
+      expect(screen.queryByText("Something went wrong. Please try again.")).toBeNull()
+    })
+
+    it("disables inputs and shows loading text during submission", async () => {
+      mockCreateUser.mockReturnValue(new Promise(() => {}))
+
+      render(<AuthForm type="signup" />)
+      fillAndSubmit()
+
+      await waitFor(() => {
+        expect(screen.getByLabelText("Email")).toBeDisabled()
+        expect(screen.getByLabelText("Password")).toBeDisabled()
+        expect(screen.getByRole("button", { name: /signing up/i })).toBeDisabled()
+      })
+    })
+
+    it("shows error for email already in use", async () => {
+      mockCreateUser.mockRejectedValue({ code: "auth/email-already-in-use" })
+
+      render(<AuthForm type="signup" />)
+      fillAndSubmit()
+
+      await waitFor(() => {
+        expect(screen.getByText("An account with this email already exists.")).toBeInTheDocument()
+      })
+      expect(mockPush).not.toHaveBeenCalled()
+    })
+
+    it("shows error for weak password", async () => {
+      mockCreateUser.mockRejectedValue({ code: "auth/weak-password" })
+
+      render(<AuthForm type="signup" />)
+      fillAndSubmit()
+
+      await waitFor(() => {
+        expect(screen.getByText("Password must be at least 6 characters.")).toBeInTheDocument()
+      })
+    })
+
+    it("shows generic error for unknown Firebase errors", async () => {
+      mockCreateUser.mockRejectedValue({ code: "auth/some-unknown-error" })
+
+      render(<AuthForm type="signup" />)
+      fillAndSubmit()
+
+      await waitFor(() => {
+        expect(screen.getByText("Something went wrong. Please try again.")).toBeInTheDocument()
+      })
+    })
+
+    it("clears error on successful retry", async () => {
+      mockCreateUser.mockRejectedValueOnce({ code: "auth/email-already-in-use" })
+      const fakeUser = { uid: "uid123" }
+      mockCreateUser.mockResolvedValueOnce({ user: fakeUser })
+      mockUpdateProfile.mockResolvedValue(undefined)
+      mockSetDoc.mockResolvedValue(undefined)
+
+      render(<AuthForm type="signup" />)
+      fillAndSubmit()
+
+      await waitFor(() => {
+        expect(screen.getByText("An account with this email already exists.")).toBeInTheDocument()
+      })
+
+      fillAndSubmit()
+
+      await waitFor(() => {
+        expect(screen.queryByText("An account with this email already exists.")).toBeNull()
+        expect(mockPush).toHaveBeenCalledWith("/heists")
+      })
+    })
   })
 })
