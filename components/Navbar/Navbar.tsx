@@ -1,8 +1,19 @@
+"use client"
+
 import { Clock8 } from "lucide-react"
 import Link from "next/link"
+import { signOut } from "firebase/auth"
+import { auth } from "@/lib/firebase"
+import { useUser } from "@/hooks/useUser"
 import styles from "./Navbar.module.css"
 
 export default function Navbar() {
+  const { user } = useUser()
+
+  async function handleLogout() {
+    await signOut(auth)
+  }
+
   return (
     <div className={styles.siteNav}>
       <nav>
@@ -19,6 +30,11 @@ export default function Navbar() {
           <li>
             <Link href="/heists/create" className={styles.ctaButton}>Create Heist</Link>
           </li>
+          {user && (
+            <li>
+              <button onClick={handleLogout} className={styles.logoutButton}>Log Out</button>
+            </li>
+          )}
         </ul>
       </nav>
     </div>
