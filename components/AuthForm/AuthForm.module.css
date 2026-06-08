@@ -40,3 +40,7 @@
 .switch a {
   @apply text-primary hover:underline;
 }
+
+.error {
+  @apply text-sm text-red-500;
+}
