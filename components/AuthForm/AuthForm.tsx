@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { Eye, EyeOff } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
+import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from "firebase/auth"
 import { doc, setDoc } from "firebase/firestore"
 import { auth, db } from "@/lib/firebase"
 import { generateCodename } from "@/lib/codename"
@@ -18,6 +18,10 @@ const ERROR_MESSAGES: Record<string, string> = {
   "auth/email-already-in-use": "An account with this email already exists.",
   "auth/weak-password": "Password must be at least 6 characters.",
   "auth/invalid-email": "Please enter a valid email address.",
+  "auth/invalid-credential": "Invalid email or password.",
+  "auth/user-not-found": "No account found with this email.",
+  "auth/wrong-password": "Incorrect password.",
+  "auth/too-many-requests": "Too many attempts. Please try again later.",
 }
 
 export default function AuthForm({ type }: AuthFormProps) {
@@ -25,6 +29,7 @@ export default function AuthForm({ type }: AuthFormProps) {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   const isLogin = type === "login"
@@ -33,13 +38,24 @@ export default function AuthForm({ type }: AuthFormProps) {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
-    if (isLogin) {
-      console.log({ email, password })
-      return
-    }
-
     setIsLoading(true)
     setError(null)
+    setSuccess(false)
+
+    if (isLogin) {
+      try {
+        await signInWithEmailAndPassword(auth, email, password)
+        setSuccess(true)
+        setEmail("")
+        setPassword("")
+      } catch (err: unknown) {
+        const code = (err as { code?: string }).code ?? ""
+        setError(ERROR_MESSAGES[code] ?? "Something went wrong. Please try again.")
+      } finally {
+        setIsLoading(false)
+      }
+      return
+    }
 
     try {
       console.log("1. creating user...")
@@ -102,8 +118,12 @@ export default function AuthForm({ type }: AuthFormProps) {
         <p className={styles.error} aria-live="polite">{error}</p>
       )}
 
+      {success && (
+        <p className={styles.success} aria-live="polite">Logged in successfully!</p>
+      )}
+
       <button type="submit" className={styles.submit} disabled={isLoading}>
-        {!isLogin && isLoading ? "Signing up…" : isLogin ? "Log in" : "Sign up"}
+        {isLoading ? (isLogin ? "Logging in…" : "Signing up…") : (isLogin ? "Log in" : "Sign up")}
       </button>
 
       <p className={styles.switch}>
