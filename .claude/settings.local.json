@@ -1,22 +1,25 @@
 {
-    "permissions": {
-        "allow": [
-            "WebSearch",
-            "Bash(git init)",
-            "Bash(git switch:*)"
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(git init)",
+      "Bash(git switch:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|Create",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Remember to commit your changes with git after editing files!'"
+          }
         ]
-    },
-    "hooks": {
-        "PostToolUse": [
-            {
-                "matcher": "Write|Edit|Create",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "echo 'Remember to commit your changes with git after editing files!'"
-                    }
-                ]
-            }
-        ]
-    }
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true
+  }
 }

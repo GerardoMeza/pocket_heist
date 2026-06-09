@@ -1,28 +1,62 @@
-// this page should be used only as a splash page to decide where a user should be navigated to
-// when logged in --> to /heists
-// when not logged in --> to /login
-
 import { Clock8 } from "lucide-react"
+import Link from "next/link"
+import styles from "./splash.module.css"
 
 export default function Home() {
   return (
-    <div className="center-content">
-      <div className="page-content">
-        <h1>
-          P<Clock8 className="logo" strokeWidth={2.75} />cket Heist
+    <div className={styles.wrapper}>
+      {/* Ambient background glows */}
+      <div className={styles.glowPurple} />
+      <div className={styles.glowPink} />
+
+      {/* Noise grain overlay */}
+      <div className={styles.grain} />
+
+      {/* Dashed grid */}
+      <div className={styles.grid} />
+
+      <div className={styles.inner}>
+        {/* Eyebrow tag */}
+        <div className={styles.eyebrow}>
+          <span className={styles.dot} />
+          <span>Operazione in corso</span>
+        </div>
+
+        {/* Hero title */}
+        <h1 className={styles.title}>
+          <span className={styles.titleLine1}>
+            P<Clock8 className={styles.clockIcon} strokeWidth={2.75} />cket
+          </span>
+          <span className={styles.titleLine2}>Heist</span>
         </h1>
-        <div>Piccole missioni. Grande caos in ufficio.</div>
-        <p>
-          Welcome to Pocket Heist — the playful way to assign quick,
-          time-boxed missions to your coworkers. Plant a rubber duck on
-          someone&apos;s desk, swap the office coffee for decaf, or recover
-          the last donut before it disappears. Every heist is a tiny caper
-          with a ticking clock.
+
+        {/* Tagline */}
+        <p className={styles.tagline}>
+          Piccole missioni.&nbsp; Grande caos in ufficio.
         </p>
-        <p>
-          Sign up to start your first job, or log in to check on the crew
-          and see which capers are still in play.
+
+        {/* Description */}
+        <p className={styles.description}>
+          Assign covert micro-missions to your crew — plant a rubber duck,
+          swap the coffee for decaf, claim the last donut. Every job has a
+          ticking clock and a target.
         </p>
+
+        {/* CTA */}
+        <div className={styles.actions}>
+          <Link href="/signup" className={styles.btnPrimary}>
+            Start your first heist
+          </Link>
+          <Link href="/login" className={styles.btnGhost}>
+            Already in the crew? Log in
+          </Link>
+        </div>
+
+        {/* Footer badge */}
+        <div className={styles.badge}>
+          <span className={styles.badgeText}>48h</span>
+          <span className={styles.badgeLabel}>per mission</span>
+        </div>
       </div>
     </div>
   )
