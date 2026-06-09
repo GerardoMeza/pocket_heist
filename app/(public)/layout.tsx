@@ -1,11 +1,13 @@
-export default function RootLayout({
+import RouteGuard from "@/components/RouteGuard"
+
+export default function PublicLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <main className="public">
-      {children}
-    </main>
+    <RouteGuard requireAuth={false} redirectTo="/heists">
+      <main className="public">{children}</main>
+    </RouteGuard>
   )
 }
