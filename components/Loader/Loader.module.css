@@ -1,0 +1,18 @@
+@reference "../../app/globals.css";
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.wrapper {
+  @apply flex items-center justify-center;
+  min-height: 100vh;
+}
+
+.dot {
+  @apply bg-primary rounded-full;
+  width: 0.75rem;
+  height: 0.75rem;
+  animation: pulse 1.2s ease-in-out infinite;
+}
