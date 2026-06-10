@@ -1,32 +1,35 @@
 "use client"
 
 import { useHeists } from "@/hooks/useHeists"
+import HeistCard from "@/components/HeistCard"
+import HeistCardSkeleton from "@/components/HeistCardSkeleton"
+import styles from "./heists.module.css"
 
-export default function HeistsPage() {
-  const { heists: active } = useHeists("active")
-  const { heists: assigned } = useHeists("assigned")
-  const { heists: expired } = useHeists("expired")
+const SKELETON_COUNT = 6
+
+function HeistSection({ title, filter }: { title: string; filter: "active" | "assigned" }) {
+  const { heists, loading } = useHeists(filter)
 
   return (
+    <section>
+      <h2>{title}</h2>
+      <div className={styles.grid}>
+        {loading
+          ? Array.from({ length: SKELETON_COUNT }).map((_, i) => <HeistCardSkeleton key={i} />)
+          : heists.length === 0
+            ? <p className={styles.empty}>No {title.toLowerCase()} right now.</p>
+            : heists.map(h => <HeistCard key={h.id} heist={h} />)
+        }
+      </div>
+    </section>
+  )
+}
+
+export default function HeistsPage() {
+  return (
     <div className="page-content">
-      <div className="active-heists">
-        <h2>Your Active Heists</h2>
-        <ul>
-          {active.map(h => <li key={h.id}>{h.title}</li>)}
-        </ul>
-      </div>
-      <div className="assigned-heists">
-        <h2>Heists You&apos;ve Assigned</h2>
-        <ul>
-          {assigned.map(h => <li key={h.id}>{h.title}</li>)}
-        </ul>
-      </div>
-      <div className="expired-heists">
-        <h2>All Expired Heists</h2>
-        <ul>
-          {expired.map(h => <li key={h.id}>{h.title}</li>)}
-        </ul>
-      </div>
+      <HeistSection title="Active Heists" filter="active" />
+      <HeistSection title="Heists You&apos;ve Assigned" filter="assigned" />
     </div>
   )
 }

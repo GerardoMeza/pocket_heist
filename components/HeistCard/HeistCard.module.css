@@ -1,0 +1,58 @@
+@reference "../../app/globals.css";
+
+.card {
+  border-radius: 23px;
+  background: linear-gradient(58.4deg, #a17c00 0%, #252525 100%);
+  padding: 28px 21px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow: clip;
+}
+
+.title {
+  text-decoration: none;
+}
+
+.title h3 {
+  @apply text-heading;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.3125px;
+}
+
+.title:hover h3 {
+  text-decoration: underline;
+}
+
+.meta {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.meta li {
+  @apply text-body;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.1504px;
+}
+
+.label {
+  @apply text-body;
+}
+
+.target {
+  color: #c27aff;
+}
+
+.creator {
+  color: #fb64b6;
+}
