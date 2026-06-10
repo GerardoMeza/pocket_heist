@@ -1,0 +1,44 @@
+@reference "../../app/globals.css";
+
+.form {
+  @apply flex flex-col gap-5 my-4 mx-auto w-full max-w-sm;
+}
+
+.field {
+  @apply flex flex-col gap-1;
+}
+
+.field label {
+  @apply text-body text-sm font-medium;
+}
+
+.field input,
+.field textarea,
+.field select {
+  @apply bg-lighter text-heading rounded-lg px-4 py-2 outline-none border border-transparent;
+  @apply focus:border-primary transition-colors;
+}
+
+.field select {
+  @apply cursor-pointer;
+}
+
+.field textarea {
+  @apply resize-none;
+}
+
+.actions {
+  @apply flex gap-3 mt-1;
+}
+
+.submit {
+  @apply flex-1 bg-primary text-dark font-semibold rounded-lg py-2 px-4 hover:opacity-90 transition-opacity disabled:opacity-50;
+}
+
+.cancel {
+  @apply flex-1 text-body font-semibold rounded-lg py-2 px-4 border border-body/30 hover:border-body/60 transition-colors disabled:opacity-50;
+}
+
+.error {
+  @apply text-sm text-red-500;
+}
