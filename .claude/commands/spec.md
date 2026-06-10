@@ -50,12 +50,15 @@ From `$ARGUMENTS`, extract:
 4. `figma_component` (optional)
     - If the user input contains a Figma link, extract the component name from the link and include it in the spec file under "Figma Design Reference".  
     - Example: `figma: https://www.figma.com/file/abc123/design?node-id=456-789&t=xyz`
+    - 'figma_hint' is the part after 'figma:' and should be passed to the figma-design-extractor subagent in Step 2.5.
 
 
 If you cannot infer a sensible `feature_title` and `feature_slug`, ask the user to clarify instead of guessing.
 
 ## Step 2.5 Pull Figma context when needed
-If a Figma link is provided,and figma MCP tools are available:
+If 'figma_hint' is present and figma mcp tools ara available:
+Use the **figma-design-extractor** subagent to provide a design for the feature, citing the 'figma hint' and tell it to:
+
 1. Use the figma MCP tools to locate the component in the Figma file 
 2. Extract relevant context such as:
    - Component name
